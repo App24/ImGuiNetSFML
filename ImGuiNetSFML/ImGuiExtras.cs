@@ -28,8 +28,7 @@ namespace ImGuiNETSFML
             float CROSSHAIR_SIZE = 7f;
             Vector2 SV_PICKER_SIZE = new Vector2(200, 200);
 
-            ImColor color = new ImColor();
-            color.Value = new Vector4(rgb, 255);
+            ImColor color = Utils.CreateImColor(rgb);
             bool valueChanged = false;
 
             var drawList = ImGui.GetWindowDrawList();
@@ -38,33 +37,13 @@ namespace ImGuiNETSFML
 
             List<ImColor> colors = new List<ImColor>();
 
-            ImColor customColor = new ImColor();
-            customColor.Value = new Vector4(255, 0, 0, 255);
-            colors.Add(customColor);
-
-            customColor = new ImColor();
-            customColor.Value = new Vector4(255, 255, 0, 255);
-            colors.Add(customColor);
-
-            customColor = new ImColor();
-            customColor.Value = new Vector4(0, 255, 0, 255);
-            colors.Add(customColor);
-
-            customColor = new ImColor();
-            customColor.Value = new Vector4(0, 255, 255, 255);
-            colors.Add(customColor);
-
-            customColor = new ImColor();
-            customColor.Value = new Vector4(0, 0, 255, 255);
-            colors.Add(customColor);
-
-            customColor = new ImColor();
-            customColor.Value = new Vector4(255, 0, 255, 255);
-            colors.Add(customColor);
-
-            customColor = new ImColor();
-            customColor.Value = new Vector4(255, 0, 0, 255);
-            colors.Add(customColor);
+            colors.Add(Utils.CreateImColor(new Vector3(255, 0, 0)));
+            colors.Add(Utils.CreateImColor(new Vector3(255, 255, 0)));
+            colors.Add(Utils.CreateImColor(new Vector3(0, 255, 0)));
+            colors.Add(Utils.CreateImColor(new Vector3(0, 255, 255)));
+            colors.Add(Utils.CreateImColor(new Vector3(0, 0, 255)));
+            colors.Add(Utils.CreateImColor(new Vector3(255, 0, 255)));
+            colors.Add(Utils.CreateImColor(new Vector3(255, 0, 0)));
 
             for (int i = 0; i < 6; i++)
             {
@@ -87,42 +66,40 @@ namespace ImGuiNETSFML
                 ImGui.ColorConvertFloat4ToU32(new Vector4(255))
                 );
 
+            int step = 5;
+            Vector2 pos = new Vector2(0);
+
+            Vector4 c00 = new Vector4(1, 1, 1, 1);
+            Vector4 c10 = new Vector4(1, 1, 1, 1);
+            Vector4 c01 = new Vector4(1, 1, 1, 1);
+            Vector4 c11 = new Vector4(1, 1, 1, 1);
+            for (int y1 = 0; y1 < step; y1++)
             {
-                int step = 5;
-                Vector2 pos = new Vector2(0);
-
-                Vector4 c00 = new Vector4(1, 1, 1, 1);
-                Vector4 c10 = new Vector4(1, 1, 1, 1);
-                Vector4 c01 = new Vector4(1, 1, 1, 1);
-                Vector4 c11 = new Vector4(1, 1, 1, 1);
-                for (int y1 = 0; y1 < step; y1++)
+                for (int x1 = 0; x1 < step; x1++)
                 {
-                    for (int x1 = 0; x1 < step; x1++)
-                    {
-                        float s0 = x1 / (float)step;
-                        float s1 = (x1 + 1) / (float)step;
-                        float v0 = 1 - y1 / (float)step;
-                        float v1 = 1 - (y1 + 1) / (float)step;
+                    float s0 = x1 / (float)step;
+                    float s1 = (x1 + 1) / (float)step;
+                    float v0 = 1 - y1 / (float)step;
+                    float v1 = 1 - (y1 + 1) / (float)step;
 
-                        ImGui.ColorConvertHSVtoRGB(hue, s0, v0, out c00.X, out c00.Y, out c00.Z);
-                        ImGui.ColorConvertHSVtoRGB(hue, s1, v0, out c10.X, out c10.Y, out c10.Z);
-                        ImGui.ColorConvertHSVtoRGB(hue, s0, v1, out c01.X, out c01.Y, out c01.Z);
-                        ImGui.ColorConvertHSVtoRGB(hue, s1, v1, out c11.X, out c11.Y, out c11.Z);
+                    ImGui.ColorConvertHSVtoRGB(hue, s0, v0, out c00.X, out c00.Y, out c00.Z);
+                    ImGui.ColorConvertHSVtoRGB(hue, s1, v0, out c10.X, out c10.Y, out c10.Z);
+                    ImGui.ColorConvertHSVtoRGB(hue, s0, v1, out c01.X, out c01.Y, out c01.Z);
+                    ImGui.ColorConvertHSVtoRGB(hue, s1, v1, out c11.X, out c11.Y, out c11.Z);
 
-                        drawList.AddRectFilledMultiColor(
-                            new Vector2(pickerPos.X + pos.X, pickerPos.Y + pos.Y),
-                            new Vector2(pickerPos.X + pos.X + SV_PICKER_SIZE.X / step, pickerPos.Y + pos.Y + SV_PICKER_SIZE.Y / step),
-                            ImGui.ColorConvertFloat4ToU32(c00),
-                            ImGui.ColorConvertFloat4ToU32(c10),
-                            ImGui.ColorConvertFloat4ToU32(c11),
-                            ImGui.ColorConvertFloat4ToU32(c01)
-                            );
+                    drawList.AddRectFilledMultiColor(
+                        new Vector2(pickerPos.X + pos.X, pickerPos.Y + pos.Y),
+                        new Vector2(pickerPos.X + pos.X + SV_PICKER_SIZE.X / step, pickerPos.Y + pos.Y + SV_PICKER_SIZE.Y / step),
+                        ImGui.ColorConvertFloat4ToU32(c00),
+                        ImGui.ColorConvertFloat4ToU32(c10),
+                        ImGui.ColorConvertFloat4ToU32(c11),
+                        ImGui.ColorConvertFloat4ToU32(c01)
+                        );
 
-                        pos.X += SV_PICKER_SIZE.X / step;
-                    }
-                    pos.X = 0;
-                    pos.Y += SV_PICKER_SIZE.Y / step;
+                    pos.X += SV_PICKER_SIZE.X / step;
                 }
+                pos.X = 0;
+                pos.Y += SV_PICKER_SIZE.Y / step;
             }
 
             float x = saturation * SV_PICKER_SIZE.X;
@@ -179,6 +156,7 @@ namespace ImGuiNETSFML
 
         public static bool Dropdown(string label, string[] items, ref int index)
         {
+            bool valueChanged = false;
             if (ImGui.BeginCombo(label, items[index]))
             {
                 for (int i = 0; i < items.Length; i++)
@@ -188,6 +166,7 @@ namespace ImGuiNETSFML
                     if (ImGui.Selectable(name, selected))
                     {
                         index = i;
+                        valueChanged = true;
                     }
 
                     if (selected)
@@ -196,9 +175,8 @@ namespace ImGuiNETSFML
                     }
                 }
                 ImGui.EndCombo();
-                return true;
             }
-            return false;
+            return valueChanged;
         }
     }
 }
